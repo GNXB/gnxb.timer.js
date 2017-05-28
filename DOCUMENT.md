@@ -14,6 +14,8 @@ var timer = new gnxb.timer("timer", {
         s: 2
     }
 });
+
+timer.start();
 ```
 
 If you want to use this class as countdown just set first constructor arguement to `"countdown"`
