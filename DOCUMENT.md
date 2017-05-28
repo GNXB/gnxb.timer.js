@@ -29,10 +29,10 @@ callback: function(e) { console.log(e.h+":"+e.m+":"+e.s); },
 ```
 
 # Key Methods
-- [`.start()`](https://github.com/GNXB/gnxb.timer.js#start)
-- [`.pause()`](https://github.com/GNXB/gnxb.timer.js#pause)
-- [`.continue()`](https://github.com/GNXB/gnxb.timer.js#continue)
-- [`.stop()`](https://github.com/GNXB/gnxb.timer.js#stop)
+- [`.start()`](#start)
+- [`.pause()`](#pause)
+- [`.continue()`](#continue)
+- [`.stop()`](#stop)
 
 ## `.start()`
 To start from time that set in options
@@ -59,9 +59,9 @@ $.post('/path/to/backend.file', function(res) {
 ## `.stop()`
 
 # Set Method
-- [`.setMode(mode)`](https://github.com/GNXB/gnxb.timer.js#setmodemode)
-- [`.setTime(time)`](https://github.com/GNXB/gnxb.timer.js#settimetime)
-- [`.setEndTime(time)`](https://github.com/GNXB/gnxb.timer.js#setendtimetime)
+- [`.setMode(mode)`](#setmodemode)
+- [`.setTime(time)`](#settimetime)
+- [`.setEndTime(time)`](#setendtimetime)
 
 ## `.setMode(mode)`
 `mode` in `String` type with two possible value `"timer"` and `"countdown"` Then it will change mode instantly.
