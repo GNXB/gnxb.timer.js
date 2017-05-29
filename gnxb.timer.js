@@ -21,13 +21,13 @@ gnxb.timer = function(mode, options) {
         time: 60,
         endTime: false,
         callback: function(e) { console.log(e.h+":"+e.m+":"+e.s); },
+        key: "hms",
         diff: 1,
         interval: 1000,
         delay: 0,
         pad: { // If you want output as integer, set pad: false
-            h: 2,
-            m: 2,
-            s: 2
+            Y: 1, M: 1, D: 1,
+            h: 2, m: 2, s: 2
         }
     };
 
@@ -43,6 +43,7 @@ gnxb.timer = function(mode, options) {
     // ##
     // ### Prepare Section ###
 
+    _._key = { Y:false, M:false, D:false, h: false, m: false, s:false };
     _.mode = mode;
     _.options = options;
     _._interval;
@@ -83,25 +84,25 @@ gnxb.timer = function(mode, options) {
     * @function {loop}
     * @callback {Object} {Object of h,m,s}
     */
-    _.loop = function() {
-        _.output.h = Math.floor(_._time / 3600);
-        var h = _._time % 3600;
-        _.output.m = Math.floor(h / 60);
-        _.output.s = Math.floor(h % 60);
-
-        if (_.pad) {
-            for (var i in _.output) {
-                _.output[i] = _.pad(_.output[i], _.pad[i]);
-            }
-        }
+    var r;
+    _.display = function() {
+        r = _._time;
+        if (_._key.Y) { _.output.Y = Math.floor(r / 31104000); _._pad('Y'); r %= 31104000; }
+        if (_._key.M) { _.output.M = Math.floor(r / 2592000); _._pad('M'); r %= 2592000; }
+        if (_._key.D) { _.output.D = Math.floor(r / 86400); _._pad('D'); r %= 86400; }
+        if (_._key.h) { _.output.h = Math.floor(r / 3600); _._pad('h'); r %= 3600; }
+        if (_._key.m) { _.output.m = Math.floor(r / 60); _._pad('m'); r %= 60; }
+        if (_._key.s) { _.output.s = r; _._pad('s'); }
 
         _.callback(_.output);
+    }
+
+    _.loop = function() {
+        _.display();
         _._time += _.diff;
 
         if (!_.condition()) {
-            _._time -= _.diff;
-            _.event.stop(_._time);
-            clearInterval(_._interval);
+            _.stop();
         }
     }
 
@@ -162,7 +163,7 @@ gnxb.timer = function(mode, options) {
         } else {
             _._time = _.time;
         }
-        _.loop();
+        _.display();
     };
 
 
@@ -173,6 +174,7 @@ gnxb.timer = function(mode, options) {
     _.stop = function() {
         _.event.stop(_._time);
         _._time = _.time;
+        _.display();
         clearInterval(_._interval);
     };
 
@@ -183,6 +185,16 @@ gnxb.timer = function(mode, options) {
         _.event[event] = _callback;
     };
 
+
+    _.setKey = function(key) {
+        // Clear attribute
+        _.output = {};
+        for (var i in _._key) {
+            if (_.key.indexOf(i) > -1) {
+                _._key[i] = true;
+            }
+        }
+    };
  
 
     _.setMode = function(mode) {
@@ -219,10 +231,12 @@ gnxb.timer = function(mode, options) {
         _._setTime(time, 'endTime');
     };
 
-    _.pad = function(n, size) {
-        n = n.toString();
-        while (n.length < (size || 2)) {n = "0" + n;}
-        return n;
+    _._pad = function(index) {
+        if (_.pad[index] > 1) {
+            var n = _.output[index].toString();
+            while (n.length < (_.pad[index] || 2)) {n = "0" + n;}
+            _.output[index] = n;
+        }
     };
 
 
@@ -230,4 +244,5 @@ gnxb.timer = function(mode, options) {
 
     _._setTime(_.time, 'time');
     _._time = _.time;
+    _.setKey(_.key);
 };
